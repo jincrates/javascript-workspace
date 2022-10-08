@@ -1,12 +1,9 @@
 {
-  "name": "ch05",
+  "name": "ch07",
   "version": "1.0.0",
   "description": "",
   "main": "meadowlark.js",
-  "scripts": {
-    "test": "jest",
-    "lint": "eslint meadowlark.js lib"
-  },
+  "scripts": {},
   "author": "",
   "license": "ISC",
   "dependencies": {
@@ -14,8 +11,6 @@
     "express-handlebars": "^3.1.0"
   },
   "devDependencies": {
-    "eslint": "^8.25.0",
-    "eslint-config-google": "^0.14.0",
     "jest": "^25.5.4",
     "portfinder": "^1.0.32",
     "puppeteer": "^1.20.0"
