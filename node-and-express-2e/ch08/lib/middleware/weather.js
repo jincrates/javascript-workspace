@@ -27,11 +27,11 @@ const getWeatherData = () => [
       temp: '55 F',
     },
 ]
-
+  
 const weatherMiddleware = (req, res, next) => {
-    if(!res.locals.partials) res.locals.portials = {}
-    res.locals.partials.weatherContext = getWeatherData()
-    next()
+if(!res.locals.partials) res.locals.partials = {}
+res.locals.partials.weatherContext = getWeatherData()
+next()
 }
-
+  
 module.exports = weatherMiddleware
