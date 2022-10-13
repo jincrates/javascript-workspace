@@ -1,4 +1,4 @@
-// slightly modified version of the official W3C HTML5 email regex:
+// W3C HTML5 이메일 정규식 표현을 조금 수정했습니다.
 // https://html.spec.whatwg.org/multipage/forms.html#valid-e-mail-address
 const VALID_EMAIL_REGEX = new RegExp('^[a-zA-Z0-9.!#$%&\'*+\/=?^_`{|}~-]+@' +
     '[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?' +
@@ -11,20 +11,55 @@ class NewsletterSignup {
         this.email = email
     }
     async save() {
-        // here's where we would do the work of saving to a database
-        // since this method is async, it will return a promise, and
-        // since we're not throwing any errors, the promise will
-        // resolve successfully
+        // 이 함수 안에 데이터베이스에 저장하는 코드가 들어갑니다.
+        // 이 메서드는 비동기이므로 프라미스를 반환할 텐데, 
+        // 아무 오류도 일으키지 않았으므로
+        // 프라미스는 성공적으로 완수(resolve)됩니다.
     }
 }
 
 exports.api = {}
 
-exports.home = (req, res) => res.render('home')
+exports.home = (req, res) => {
+    res.cookie('monster', 'nom nom')
+    res.cookie('signed_monster', 'nom nom', { signed: true })
+    res.render('home')
+}
 
-//
+// 기존 핸들러
 exports.newsletterSignup = (req, res) => {
     res.render('newsletter-signup', { csrf: 'CSRF token goes here' })
+}
+
+exports.newsletterSignupProcess = (req, res) => {
+    const name = req.body.name || '', email = req.body.email || ''
+    // 입력 유효성 검사
+    if(!VALID_EMAIL_REGEX.test(email)) {
+            req.session.flash = {
+            type: 'danger',
+            intro: 'Validation error!',
+            message: 'The email address you entered was not valid.',
+        }
+        return res.redirect(303, '/newsletter-signup')
+    }
+
+    new NewsletterSignup({ name, email }).save()
+    .then(() => {
+        req.session.flash = {
+            type: 'success',
+            intro: 'Thank you!',
+            message: 'You have now been signed up for the newsletter.',
+        }
+        return res.redirect(303, '/newsletter-archive')
+    })
+    .catch(err => {
+        req.session.flash = {
+            type: 'danger',
+            intro: 'Database error!',
+            message: 'There was a database error: please try again later.',
+        }
+        return res.redirect(303, '/newsletter-archive')
+    })
 }
 
 /*
@@ -35,11 +70,8 @@ exports.newsletterSignupProcess = (req, res) => {
     res.redirect(303, '/newsletter-signup/thank-you')
 }
 */
-ex
-
-
 exports.newsletterSignupThankYou = (req, res) => res.render('newsletter-signup-thank-you')
-//
+exports.newsletterArchive = (req, res) => res.render('newsletter-archive')
 
 exports.vacationPhotoContest = (req, res) => {
     const now = new Date()
