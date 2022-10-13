@@ -1,3 +1,23 @@
+// slightly modified version of the official W3C HTML5 email regex:
+// https://html.spec.whatwg.org/multipage/forms.html#valid-e-mail-address
+const VALID_EMAIL_REGEX = new RegExp('^[a-zA-Z0-9.!#$%&\'*+\/=?^_`{|}~-]+@' +
+    '[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?' +
+    '(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$')
+
+// fake "newsletter signup" interface
+class NewsletterSignup {
+    constructor({ name, email }) {
+        this.name = name
+        this.email = email
+    }
+    async save() {
+        // here's where we would do the work of saving to a database
+        // since this method is async, it will return a promise, and
+        // since we're not throwing any errors, the promise will
+        // resolve successfully
+    }
+}
+
 exports.api = {}
 
 exports.home = (req, res) => res.render('home')
@@ -6,12 +26,17 @@ exports.home = (req, res) => res.render('home')
 exports.newsletterSignup = (req, res) => {
     res.render('newsletter-signup', { csrf: 'CSRF token goes here' })
 }
+
+/*
 exports.newsletterSignupProcess = (req, res) => {
     console.log('CSRF token (from hidden form field): ' + req.body._csrf)
     console.log('Name (from visible form field): ' + req.body.name)
     console.log('Email (from visible form field): ' + req.body.email)
     res.redirect(303, '/newsletter-signup/thank-you')
 }
+*/
+ex
+
 
 exports.newsletterSignupThankYou = (req, res) => res.render('newsletter-signup-thank-you')
 //
