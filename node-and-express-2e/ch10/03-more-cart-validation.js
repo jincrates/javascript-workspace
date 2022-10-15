@@ -4,7 +4,9 @@ const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const expressSession = require('express-session')
 
-const requiresWaiver = require('./lib/tourRequiresWaiver')
+const cartValidation = require('./lib/cartValidation')
+const { urlencoded } = require('body-parser')
+
 const app = express()
 
 app.use(express.static(__dirname + '/public'))
@@ -27,18 +29,15 @@ app.set('view engine', 'handlebars')
 const products = [
     { id: 'hPc8YUbFuZM9edw4DaxwHk', name: 'Rock Climbing Expedition in Bend', price: 239.95, requiresWaiver: true },
     { id: 'eyryDtCCu9UUcqe9XgjbRk', name: 'Walking Tour of Portland', price: 89.95 },
-    { id: '6oC1Akf6EbcxWZXHQYNFwx', name: 'Manzanita Surf Expedition', price: 159.95 },
+    { id: '6oC1Akf6EbcxWZXHQYNFwx', name: 'Manzanita Surf Expedition', price: 159.95, maxGuests: 4 },
     { id: 'w6wTWMx39zcBiTdpM9w5J7', name: 'Wine Tasting in the Willamette Valley', price: 229.95 },
 ]
 const productsById = products.reduce((byId, p) => Object.assign(byId, { [p.id]: p }), {})
 
-app.use((req, res, next) => {
-    const { cart } = req.session
-    if(cart) cart.warnings = []
-    next()
-})
-
-app.use(requiresWaiver)
+// 유효성 체크
+app.use(cartValidation.resetValidation)
+app.use(cartValidation.checkWaivers)
+app.use(cartValidation.checkGuestCounts)
 
 app.get('/', (req, res) => {
     const cart = req.session.cart || { items: [] }
@@ -50,12 +49,12 @@ app.post('/add-to-cart', (req, res) => {
     if(!req.session.cart) req.session.cart = { items: [] }
     const { cart } = req.session
     Object.keys(req.body).forEach(key => {
-        if(!key.startsWith('guests-')) return 
+        if(!key.startsWith('guests-')) return
         const productId = key.split('-')[1]
         const product = productsById[productId]
         const guests = Number(req.body[key])
         if(guests === 0) return
-        if(!cart.items.some(item => item.product.id === productId)) cart.items.push({ product, guests: 0 })
+        if(!cart.items.some(item => item.product.id === productId)) cart.items.push({ product, guests: 0})
         const idx = cart.items.findIndex(item => item.product.id === productId)
         const item = cart.items[idx]
         item.guests += guests
@@ -66,5 +65,5 @@ app.post('/add-to-cart', (req, res) => {
 })
 
 const port = process.env.PORT || 3000
-app.listen(port, () => console.log(`Express started on http://localhost:${port}` +
-    '; press Ctrl-C to terminate.'))
+app.listen(port, () => console.log( `Express started on http://localhost:${port}` +
+  '; press Ctrl-C to terminate.'))
