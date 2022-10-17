@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "body-parser": "^1.20.1",
+    "connect-redis": "^3.4.2",
+    "cookie-parser": "^1.4.6",
+    "express": "^4.18.2",
+    "express-handlebars": "^3.1.0",
+    "express-session": "^1.17.3",
+    "mongoose": "^5.13.15",
+    "multiparty": "^4.2.3"
+  }
+}
