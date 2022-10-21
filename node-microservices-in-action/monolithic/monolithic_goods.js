@@ -1,7 +1,7 @@
 
 const mysql = require('mysql');
 const conn = {
-    host: 'localhost',
+    host: '127.0.0.1',
     user: 'micro',
     password: 'service',
     database: 'monolithic'
