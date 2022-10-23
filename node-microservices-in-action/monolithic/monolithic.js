@@ -1,4 +1,3 @@
-
 const http = require('http');
 const url = require('url');
 const querystring = require('querystring');
@@ -34,7 +33,10 @@ var server = http.createServer((req, res) => {
     } else {
         onRequest(res, method, pathname, uri.query);
     }
-}).listen(8000);
+}).listen(8000, () => {
+    console.log("RUN http://localhost:8080" +
+        "terminate Ctrl+C")
+});
 
 /**
  * 요청에 대해 회원관리 상품관리 구매관리 모듈별로 분기
