@@ -2,6 +2,7 @@
 
 // 비즈니스 로직 파일 참조
 const business = require('../monolithic/monolithic_members.js');
+const cluster = require('cluster');
 
 // Server 클래스 참조
 class members extends require('./server') {
@@ -25,5 +26,14 @@ class members extends require('./server') {
     }
 }
 
-// 인스턴스 생성
-new members();
+if (cluster.isMaster) {
+    cluster.fork();
+
+    cluster.on('exit', (worker, code, signal) => {
+        console.log(`worker ${worker.process.pid} died`);
+        cluster.fork();
+    })
+} else {
+    // 인스턴스 생성
+    new members();
+}

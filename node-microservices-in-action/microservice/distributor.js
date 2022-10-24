@@ -1,5 +1,11 @@
+'use strict'
+/**
+ * distributor
+ */
+// 접속 노드 관리 오브젝트
 var map = {};
 
+// Server 클래스 상속
 class distributor extends require('./server.js') {
     constructor() {
         super("distributor", 9000, ["POST/distributes", "GET/distributes"]);
@@ -50,7 +56,7 @@ class distributor extends require('./server.js') {
         };
 
         for (var n in map) {
-            packet.param.push(map[n].info);
+            packet.params.push(map[n].info);
         }
 
         if (socket) {
