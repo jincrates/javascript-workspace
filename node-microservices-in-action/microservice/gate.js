@@ -86,7 +86,7 @@ function onRequest(res, method, pathname, params) {
         var packet = {
             uri: pathname,
             method: method,
-            params: parmas
+            params: params
         };
 
         mapResponse[index] = res;
